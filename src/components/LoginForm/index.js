@@ -26,8 +26,13 @@ class LoginForm extends Component {
     }
     const response = await fetch(url, options)
     const data = await response.json()
+    console.log(response)
     if (response.ok === true) {
       this.onSubmitSuccess()
+    } else if (password === '') {
+      errorMessage = '*Password is not found'
+    } else if (username === '') {
+      errorMessage = '*Username is not found'
     } else {
       errorMessage = "*Username and Password didn't match"
     }
