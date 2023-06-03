@@ -25,14 +25,19 @@ class LoginForm extends Component {
     }
     const response = await fetch(url, options)
     const data = await response.json()
-    console.log(response)
+    let errorMessage
     if (response.ok === true) {
       this.onSubmitSuccess()
-    } else {
-      this.setState({
-        message: "*Username and Password didn't match",
-      })
+    } else if (username === '' && password === '') {
+      errorMessage = "*Username and Password didn't match"
+    } else if (username !== 'rahul') {
+      errorMessage = '*Username is not found'
+    } else if (password !== 'rahul@2021') {
+      errorMessage = '*Password is not found'
     }
+    this.setState({
+      message: errorMessage,
+    })
   }
 
   onChangeUsername = event => {
@@ -82,15 +87,7 @@ class LoginForm extends Component {
   }
 
   render() {
-    const {message, password, username} = this.state
-    let errorMessage
-    if (password === '') {
-      errorMessage = '*Password is not found'
-    } else if (username === '') {
-      errorMessage = '*Username is not found'
-    } else {
-      errorMessage = message
-    }
+    const {message} = this.state
 
     return (
       <div className="login-form-container">
@@ -115,7 +112,7 @@ class LoginForm extends Component {
           <button type="submit" className="login-button">
             Login
           </button>
-          <p className="error-message">{errorMessage}</p>
+          <p className="error-message">{message}</p>
         </form>
       </div>
     )
