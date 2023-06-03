@@ -15,7 +15,6 @@ class LoginForm extends Component {
   }
 
   submitForm = async event => {
-    let errorMessage = ''
     event.preventDefault()
     const {username, password} = this.state
     const userDetails = {username, password}
@@ -29,16 +28,11 @@ class LoginForm extends Component {
     console.log(response)
     if (response.ok === true) {
       this.onSubmitSuccess()
-    } else if (password === '') {
-      errorMessage = '*Password is not found'
-    } else if (username === '') {
-      errorMessage = '*Username is not found'
     } else {
-      errorMessage = "*Username and Password didn't match"
+      this.setState({
+        message: "*Username and Password didn't match",
+      })
     }
-    this.setState({
-      message: errorMessage,
-    })
   }
 
   onChangeUsername = event => {
@@ -88,7 +82,16 @@ class LoginForm extends Component {
   }
 
   render() {
-    const {message} = this.state
+    const {message, password, username} = this.state
+    let errorMessage
+    if (password === '') {
+      errorMessage = '*Password is not found'
+    } else if (username === '') {
+      errorMessage = '*Username is not found'
+    } else {
+      errorMessage = message
+    }
+
     return (
       <div className="login-form-container">
         <img
@@ -112,7 +115,7 @@ class LoginForm extends Component {
           <button type="submit" className="login-button">
             Login
           </button>
-          <p className="error-message">{message}</p>
+          <p className="error-message">{errorMessage}</p>
         </form>
       </div>
     )
