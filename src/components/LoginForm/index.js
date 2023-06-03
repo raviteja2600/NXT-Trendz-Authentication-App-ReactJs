@@ -6,12 +6,17 @@ class LoginForm extends Component {
   state = {
     username: '',
     password: '',
-    message: '',
+    showSubmitError: false,
+    errorMsg: '',
   }
 
   onSubmitSuccess = () => {
     const {history} = this.props
     history.replace('/')
+  }
+
+  onSubmitFailure = errorMsg => {
+    this.setState({showSubmitError: true, errorMsg})
   }
 
   submitForm = async event => {
@@ -25,19 +30,11 @@ class LoginForm extends Component {
     }
     const response = await fetch(url, options)
     const data = await response.json()
-    let errorMessage
     if (response.ok === true) {
       this.onSubmitSuccess()
-    } else if (username === '' && password === '') {
-      errorMessage = "*Username and Password didn't match"
-    } else if (username !== 'rahul') {
-      errorMessage = '*Username is not found'
-    } else if (password !== 'rahul@2021') {
-      errorMessage = '*Password is not found'
+    } else {
+      this.onSubmitFailure(data.error_msg)
     }
-    this.setState({
-      message: errorMessage,
-    })
   }
 
   onChangeUsername = event => {
@@ -87,7 +84,7 @@ class LoginForm extends Component {
   }
 
   render() {
-    const {message} = this.state
+    const {showSubmitError, errorMsg} = this.state
 
     return (
       <div className="login-form-container">
@@ -112,7 +109,7 @@ class LoginForm extends Component {
           <button type="submit" className="login-button">
             Login
           </button>
-          <p className="error-message">{message}</p>
+          {showSubmitError && <p className="error-message">*{errorMsg}</p>}
         </form>
       </div>
     )
